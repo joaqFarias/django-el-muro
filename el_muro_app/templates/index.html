@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block titulo %}INDEX USUARIO{% endblock %}
+
+{% block contenido %}
+<div class="row py-5 ps-5 pb-2">
+    <div class='col-md-1'></div>
+    <div class="col-md-10">  
+        <form action='nuevo/mensaje' method="POST">
+        {% csrf_token %}
+        <div class="input-group">
+            <span class="input-group-text"><b>Agrega un mensaje</b></span>
+            <textarea class="form-control" aria-label="With textarea" name='contenido'></textarea>
+        </div>
+    </div>
+</div>
+<div class="row ps-5">
+    <div class='col-md-10'></div>
+    <div class="col-md-1">
+        <button type="submit" class="btn btn-primary my-3">Publicar Mensaje</button>
+    </form>
+    </div>
+</div>
+
+<div class="row ps-5 my-5">
+    <div class='col-md-1'></div>
+    <div class="col-md-10">
+        {% for mensaje in mensajes %}
+        <div class="border border-dark p-3 my-4">
+            <div class="row">
+                <div class="col-md">
+                    <h3><b>{{mensaje.usuario}} - {{mensaje.created_at}}</b></h3> 
+                </div>
+            </div>
+            <div class="row my-2 p-1 px-3">
+                <div class="col-md">
+                    <blockquote class="blockquote">
+                    <p>{{mensaje.contenido}}</p>
+                    </blockquote>
+                </div>
+            </div>
+
+            {% for comentario in comentarios %}
+                {% if comentario.mensaje.id == mensaje.id %}
+                    <div class="row my-2 p-1 px-3">
+                        <div class="col-md">
+                            <h5><b>{{comentario.usuario}} - {{comentario.created_at}}</b></h5> 
+                        </div>
+                    </div>
+                    <div class="row my-2 p-1 px-5">
+                        <div class="col-md">
+                            <blockquote class="blockquote">
+                            <p>{{comentario.contenido}}</p>
+                            </blockquote>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="row my-2 p-1 px-3">
+                <div class="col-md-10">
+                    <form action='nuevo/comentario' method="POST">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <span class="input-group-text"><b>Agrega un comentario</b></span>
+                            <textarea class="form-control" aria-label="With textarea" name='contenido'></textarea>
+                            <input type="hidden" name="id_mensaje" value={{mensaje.id}}>
+                        </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success my-3">Publicar Comentario</button>
+                    </form>
+                </div>
+            </div> 
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block libreria %}
+{% endblock %}
